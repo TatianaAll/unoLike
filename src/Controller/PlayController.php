@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Repository\CardRepository;
+use App\Repository\GameRepository;
+use App\Repository\PlayerRepository;
 use App\Services\GameService;
+use App\Enum\Status;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +23,14 @@ final class PlayController extends AbstractController
     }
 
     #[Route('/play', name: 'app_play')]
-    public function index(): Response
+    public function index(GameRepository $gameRepository, CardRepository $cardRepository, PlayerRepository $playerRepository): Response
     {
-        return $this->render('play/index.html.twig', [
-            'controller_name' => 'PlayController',
-        ]);
+        $currentGame = $gameRepository->findOneBy(['status' => Status::IN_PROGRESS]);
+        if (!$currentGame) {
+            throw $this->createNotFoundException('Aucune partie en cours trouvée.');
+        }
+        $cards = $cardRepository->findBy(['game'=>$currentGame->getId()]);
+        $players = $playerRepository->findBy(['game'=>$currentGame->getId()]);
+        return $this->render('play/index.html.twig', ['game' => $currentGame, 'cards' => $cards, 'players' => $players]);
     }
 }
