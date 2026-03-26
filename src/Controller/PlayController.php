@@ -32,6 +32,7 @@ final class PlayController extends AbstractController
         }
         $cards = $cardRepository->findBy(['game'=>$currentGame->getId()]);
         $players = $playerRepository->findBy(['game'=>$currentGame->getId()]);
-        return $this->render('play/index.html.twig', ['game' => $currentGame, 'cards' => $cards, 'players' => $players]);
+        $humanPlayer = $playerRepository->findOneBy(['game' =>$currentGame->getId(), 'isHuman'=>true]);
+        return $this->render('play/index.html.twig', ['game' => $currentGame, 'cards' => $cards, 'players' => $players, 'humanPlayer' => $humanPlayer]);
     }
 }

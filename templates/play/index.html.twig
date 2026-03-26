@@ -6,16 +6,25 @@
 {% block body %}
 	<section class="min-h-screen bg-teal-200 p-4">
 		<h1 class="text-2xl font-bold mb-4 text-center">Partie en cours ...</h1>
+		{% if game.turn == 0 %}
+			<p class="text-center text-lg font-bold text-green-600 mb-4">C'est votre tour !</p>
+		{% else %}
+			<p class="text-center text-lg font-bold text-blue-600 mb-4">Tour du Bot
+				{{ game.turn }}</p>
+		{% endif %}
 
-    {# On a grid layout -> #}
-		<div class="grid grid-cols-3 grid-rows-3 gap-4 h-[80vh]">
+		{# On a grid layout -> #}
+		<div
+			class="grid grid-cols-3 grid-rows-3 gap-4 h-[80vh]">
 			{# Left of the screen --> Bot 1 #}
 			<div class="col-1 row-2 flex items-center justify-center">
 				{% for player in players %}
 					{% if not player.isHuman and loop.index == 2 %}
-						<div class="p-4 bg-amber-300 rounded-lg shadow w-full">
-            {# number of the boot with loop.index -> the number of round in the for loop #}
-							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3> 
+						<div
+							class="p-4 bg-amber-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
+							{# number of the boot with loop.index -> the number of round in the for loop #}
+							<h3 class="text-lg font-semibold">Bot
+								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
 									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
@@ -30,8 +39,9 @@
 			<div class="col-2 row-1 flex items-end justify-center">
 				{% for player in players %}
 					{% if not player.isHuman and loop.index == 3 %}
-						<div class="p-4 bg-green-300 rounded-lg shadow w-full">
-							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3>
+						<div class="p-4 bg-green-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
+							<h3 class="text-lg font-semibold">Bot
+								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
 									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
@@ -46,8 +56,9 @@
 			<div class="col-3 row-2 flex items-center justify-center">
 				{% for player in players %}
 					{% if not player.isHuman and loop.index == 4 %}
-						<div class="p-4 bg-sky-300 rounded-lg shadow w-full">
-							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3>
+						<div class="p-4 bg-amber-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
+							<h3 class="text-lg font-semibold">Bot
+								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
 									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
@@ -66,19 +77,30 @@
 						{{ game.currentValue }}
 					</div>
 				</div>
+				<div class="text-center">
+					<h2 class="text-lg font-semibold mb-2">Pioche</h2>
+					<a href="{{ path('app_draw_card', {'playerId': humanPlayer.id})}}">Piocher une carte</a>
+				</div>
 			</div>
 
 			{# Player -> bottom of the screen #}
 			<div class="col-2 row-3 flex items-center justify-center">
 				{% for player in players %}
 					{% if player.isHuman %}
-						<div class="p-4 bg-red-200 rounded-lg shadow w-full">
+						<div class="p-4 bg-red-200 rounded-lg shadow w-full" {% if game.turn == 0 %} style="box-shadow: 0 0 0 4px #10b981, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
 							<h3 class="text-lg font-semibold mb-2">Vos cartes</h3>
 							<ul class="flex flex-wrap gap-2">
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
-										<li class="p-2 rounded cursor-pointer hover:shadow-lg transition text-white font-bold min-h-15 min-w-10" style="background-color: {{ card.color }};">
-											<a href="{{ path('app_click', {'cardId': card.id}) }}">{{ card.label }}
+										<li
+											class="p-2 rounded cursor-pointer hover:shadow-lg transition text-white font-bold min-h-15 min-w-10" style="background-color: {{ card.color }};">
+											{# Your tune only if game.turn = 0 #}
+											{% if game.turn == 0 %}
+												<a href="{{ path('app_click', {'cardId': card.id}) }}">{{ card.label }}
+												</a>
+											{% else %}
+												{{ card.label }}
+											{% endif %}
 										</li>
 									{% endif %}
 								{% endfor %}
@@ -89,4 +111,17 @@
 			</div>
 		</div>
 	</section>
+
+	{% if game.turn != 0 %}
+		<script>
+			{% for player in players %}
+				{% if not player.isHuman and loop.index0 == game.turn %}
+					setTimeout(() => {
+					console.log('Bot ->   {{ player.id }}');
+					window.location.href = '{{ path('app_enemy', {'playerId': player.id }) }}';
+				}, 3000);
+				{% endif %}
+			{% endfor %}
+		</script>
+	{% endif %}
 {% endblock %}
