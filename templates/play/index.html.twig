@@ -4,54 +4,87 @@
 {% endblock %}
 
 {% block body %}
-	<section class="min-h-screen bg-gray-300 p-4">
+	<section class="min-h-screen bg-teal-200 p-4">
 		<h1 class="text-2xl font-bold mb-4 text-center">Partie en cours ...</h1>
 
-		<div class="grid grid-cols-6 grid-rows-6 gap-4 items-center">
-			{# Carte visible = la défausse #}
-			<div class="col-span-4 col-start-2 mb-6">
-				<h2 class="text-lg font-semibold mb-2">Défausse</h2>
-				{% for card in cards %}
-					{% if card.player is null %}
-						<div class="inline-block p-4 rounded-lg shadow-lg text-white text-xl" style="background-color: {{ card.color }};">
-							{{ card.label }}
+    {# On a grid layout -> #}
+		<div class="grid grid-cols-3 grid-rows-3 gap-4 h-[80vh]">
+			{# Left of the screen --> Bot 1 #}
+			<div class="col-1 row-2 flex items-center justify-center">
+				{% for player in players %}
+					{% if not player.isHuman and loop.index == 2 %}
+						<div class="p-4 bg-amber-300 rounded-lg shadow w-full">
+            {# number of the boot with loop.index -> the number of round in the for loop #}
+							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3> 
+							<div class="flex gap-1 mt-2 flex-wrap">
+								{% for i in 1..player.cardsInHand %}
+									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+								{% endfor %}
+							</div>
 						</div>
 					{% endif %}
 				{% endfor %}
 			</div>
 
-			{# Cartes des joueurs #}
-			<div>
+			{# Bot 2 -> top #}
+			<div class="col-2 row-1 flex items-end justify-center">
 				{% for player in players %}
-					<div class=" col-start-2 col-span-3 mb-4 p-4 bg-sky-300 rounded-lg shadow">
-						<h3 class="text-lg font-semibold">
-							{# Carte de l'utilisateur #}
-							{% if player.isHuman %}
-								Vos cartes
-							{% else %}
-								{# cartes des bots #}
-								Joueur {{ loop.index - 1 }}
-							{% endif %}
-						</h3>
-						{% if player.isHuman %}
-							<ul class="flex flex-wrap gap-2 mt-2">
+					{% if not player.isHuman and loop.index == 3 %}
+						<div class="p-4 bg-green-300 rounded-lg shadow w-full">
+							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3>
+							<div class="flex gap-1 mt-2 flex-wrap">
+								{% for i in 1..player.cardsInHand %}
+									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+
+			{# Bot 3 -> right #}
+			<div class="col-3 row-2 flex items-center justify-center">
+				{% for player in players %}
+					{% if not player.isHuman and loop.index == 4 %}
+						<div class="p-4 bg-sky-300 rounded-lg shadow w-full">
+							<h3 class="text-lg font-semibold">Bot {{ loop.index - 1 }}</h3>
+							<div class="flex gap-1 mt-2 flex-wrap">
+								{% for i in 1..player.cardsInHand %}
+									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+
+			{# Discard #}
+			<div class="col-2 row-2 flex items-center justify-center">
+				<div class="text-center">
+					<h2 class="text-lg font-semibold mb-2">Défausse</h2>
+					<div class="inline-block p-4 rounded-lg shadow-lg text-white text-2xl font-bold" style="background-color: {{ game.currentColor }}; width: 80px; height: 120px; display: flex; align-items: center; justify-content: center;">
+						{{ game.currentValue }}
+					</div>
+				</div>
+			</div>
+
+			{# Player -> bottom of the screen #}
+			<div class="col-2 row-3 flex items-center justify-center">
+				{% for player in players %}
+					{% if player.isHuman %}
+						<div class="p-4 bg-red-200 rounded-lg shadow w-full">
+							<h3 class="text-lg font-semibold mb-2">Vos cartes</h3>
+							<ul class="flex flex-wrap gap-2">
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
-										<li class="p-2 rounded cursor-pointer border-amber-300" style="background-color: {{ card.color }};">
-											{{ card.label }}
+										<li class="p-2 rounded cursor-pointer hover:shadow-lg transition text-white font-bold min-h-15 min-w-10" style="background-color: {{ card.color }};">
+											<a href="{{ path('app_click', {'cardId': card.id}) }}">{{ card.label }}
 										</li>
 									{% endif %}
 								{% endfor %}
 							</ul>
-						{% else %}
-							<!-- Cartes cachées pour les bots -->
-							<div class="flex gap-1 mt-2">
-								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-2 rounded">?</div>
-								{% endfor %}
-							</div>
-						{% endif %}
-					</div>
+						</div>
+					{% endif %}
 				{% endfor %}
 			</div>
 		</div>

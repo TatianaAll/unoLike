@@ -25,6 +25,7 @@ class GameService {
     $newGame->setDirection(true);
     $newGame->setUpdatedAt(null);
     $newGame->setStatus(Status::IN_PROGRESS);
+    $newGame->setTurn(0);
 
     // create 4 players: the first is human, others are botd
     $players = [];

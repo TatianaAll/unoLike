@@ -26,6 +26,7 @@ final class PlayController extends AbstractController
     public function index(GameRepository $gameRepository, CardRepository $cardRepository, PlayerRepository $playerRepository): Response
     {
         $currentGame = $gameRepository->findOneBy(['status' => Status::IN_PROGRESS]);
+        // if no game in progress -> error message
         if (!$currentGame) {
             throw $this->createNotFoundException('Aucune partie en cours trouvée.');
         }
