@@ -28,12 +28,12 @@
 							<div
 								class="flex gap-1 mt-2 flex-wrap">
 								{# {% for i in 1..player.cardsInHand %}
-																																	<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-																																{% endfor %} #}
+									div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+									{% endfor %} #}
 								<ul class="flex flex-wrap gap-2">
 									{% for card in cards %}
 										{% if card.player and card.player.id == player.id %}
-											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+											<li class="flex items-center justify-center p-2 rounded font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
 												{{ card.label }}
 											</li>
 										{% endif %}
@@ -55,12 +55,12 @@
 							<div
 								class="flex gap-1 mt-2 flex-wrap">
 								{# {% for i in 1..player.cardsInHand %}
-																																	<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-																																{% endfor %} #}
+									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+									{% endfor %} #}
 								<ul class="flex flex-wrap gap-2">
 									{% for card in cards %}
 										{% if card.player and card.player.id == player.id %}
-											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+											<li class="flex items-center justify-center p-2 rounded font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
 												{{ card.label }}
 											</li>
 										{% endif %}
@@ -82,12 +82,12 @@
 							<div
 								class="flex gap-1 mt-2 flex-wrap">
 								{# {% for i in 1..player.cardsInHand %}
-																																									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-																																								{% endfor %} #}
+									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+								{% endfor %} #}
 								<ul class="flex flex-wrap gap-2">
 									{% for card in cards %}
 										{% if card.player and card.player.id == player.id %}
-											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+											<li class="flex items-center justify-center p-2 rounded font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
 												{{ card.label }}
 											</li>
 										{% endif %}
@@ -103,7 +103,7 @@
 			<div class="col-2 row-2 flex items-center justify-center me-4">
 				<div class="text-center">
 					<h2 class="text-lg font-semibold mb-2">Défausse</h2>
-					<div class="p-4 rounded-lg shadow-lgtext-2xl font-bold bg-gray-800 w-20 h-30 flex align-center justify-center text-4xl" style="border: solid 4px {{ game.currentColor }}; color: {{ game.currentColor }};">
+					<div class="p-4 rounded-lg shadow-lg font-bold bg-gray-800 w-20 h-30 flex items-center justify-center text-4xl" style="border: solid 4px {{ game.currentColor }}; color: {{ game.currentColor }};">
 						{{ game.currentValue }}
 					</div>
 				</div>
@@ -123,16 +123,19 @@
 							<ul class="flex flex-wrap gap-2">
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
-										<li class="p-2 rounded font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+
+										<li class="p-2 rounded font-bold h-20 w-16 bg-gray-800 flex items-center justify-center text-3xl" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
 
 											{% if game.turn == 0 %}
 												<form action="{{ path('app_click', {'cardId': card.id}) }}" method="post">
-													<button class="w-full h-full">
+													<button class="w-full h-full flex items-center justify-center">
 														{{ card.label }}
 													</button>
 												</form>
 											{% else %}
+											<div class="w-full h-full flex items-center justify-center">
 												{{ card.label }}
+											</div>	
 											{% endif %}
 										</li>
 									{% endif %}
@@ -150,9 +153,8 @@
 			{% for player in players %}
 {% if not player.isHuman and loop.index0 == game.turn %}
 setTimeout(() => {
-console.log('tour Bot   {{ player.id }}= bot   {{ loop.index0 }}');
 window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
-}, 3000);{% endif %}{% endfor %}
+}, 2000);{% endif %}{% endfor %}
 		</script>
 	{% endif %}
 {% endblock %}
