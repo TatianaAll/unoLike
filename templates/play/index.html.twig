@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-	<section class="min-h-screen bg-teal-200 p-4">
+	<section class="min-h-screen bg-gray-200 p-4">
 		<h1 class="text-2xl font-bold mb-4 text-center">Partie en cours ...</h1>
 		{% if game.turn == 0 %}
 			<p class="text-center text-lg font-bold text-green-600 mb-4">C'est votre tour !</p>
@@ -15,7 +15,7 @@
 
 		{# On a grid layout -> #}
 		<div
-			class="grid grid-cols-3 grid-rows-3 gap-4 h-[80vh]">
+			class="grid grid-cols-3 grid-rows-3 gap-4 h-[75vh]">
 			{# Left of the screen --> Bot 1 #}
 			<div class="col-1 row-2 flex items-center justify-center">
 				{% for player in players %}
@@ -27,7 +27,7 @@
 								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
 								{% endfor %}
 							</div>
 						</div>
@@ -44,7 +44,7 @@
 								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
 								{% endfor %}
 							</div>
 						</div>
@@ -61,7 +61,7 @@
 								{{ loop.index - 1 }}</h3>
 							<div class="flex gap-1 mt-2 flex-wrap">
 								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-2 rounded text-sm">?</div>
+									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
 								{% endfor %}
 							</div>
 						</div>
@@ -70,16 +70,17 @@
 			</div>
 
 			{# Discard #}
-			<div class="col-2 row-2 flex items-center justify-center">
+			<div class="col-2 row-2 flex items-center justify-center me-4">
 				<div class="text-center">
 					<h2 class="text-lg font-semibold mb-2">Défausse</h2>
-					<div class="inline-block p-4 rounded-lg shadow-lg text-white text-2xl font-bold" style="background-color: {{ game.currentColor }}; width: 80px; height: 120px; display: flex; align-items: center; justify-content: center;">
+					<div class="p-4 rounded-lg shadow-lgtext-2xl font-bold bg-gray-800 w-20 h-30 flex align-center justify-center text-4xl" style="border: solid 4px {{ game.currentColor }}; color: {{ game.currentColor }};">
 						{{ game.currentValue }}
 					</div>
 				</div>
-				<div class="text-center">
-					<h2 class="text-lg font-semibold mb-2">Pioche</h2>
-					<a href="{{ path('app_draw_card', {'playerId': humanPlayer.id})}}">Piocher une carte</a>
+				<div class="d-flex align-items-center ms-4">
+					<a href="{{ path('app_draw_card', {'playerId': humanPlayer.id})}}" class="bg-red-700 text-white p-2 rounded hover:bg-yellow-400 hover:text-black">
+						Piocher
+					</a>
 				</div>
 			</div>
 
@@ -93,10 +94,11 @@
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
 										<li
-											class="p-2 rounded cursor-pointer hover:shadow-lg transition text-white font-bold min-h-15 min-w-10" style="background-color: {{ card.color }};">
-											{# Your tune only if game.turn = 0 #}
+											class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+											{# Your turn only if game.turn = 0 #}
 											{% if game.turn == 0 %}
-												<a href="{{ path('app_click', {'cardId': card.id}) }}">{{ card.label }}
+												<a href="{{ path('app_click', {'cardId': card.id}) }}">
+													{{ card.label }}
 												</a>
 											{% else %}
 												{{ card.label }}
@@ -117,9 +119,9 @@
 			{% for player in players %}
 				{% if not player.isHuman and loop.index0 == game.turn %}
 					setTimeout(() => {
-					console.log('Bot ->   {{ player.id }}');
-					window.location.href = '{{ path('app_enemy', {'playerId': player.id }) }}';
-				}, 3000);
+					console.log('Bot -> {{ player.id }}');
+					window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
+					}, 3000);
 				{% endif %}
 			{% endfor %}
 		</script>
