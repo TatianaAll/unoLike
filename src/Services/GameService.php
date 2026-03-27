@@ -91,4 +91,10 @@ class GameService {
     // return the randomly generated cards
     return $randomCards;
   }
+
+  public function cardSpecialEffect(Card $card) {
+    if($card->getLabel() == "X" || $card->getLabel() == "S" || $card->getLabel() == "+2" ) {
+      
+    }
+  }
 }

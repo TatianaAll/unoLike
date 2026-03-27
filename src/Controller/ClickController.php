@@ -84,6 +84,7 @@ final class ClickController extends AbstractController
     $entityManager->flush();
     return $this->redirectToRoute('app_play');
   }
+  
   #[Route('/draw/{playerId}', name:'app_draw_card', requirements: ['playerId'=>'\d+'], methods: ['GET'])]
   public function playerDrawCard(int $playerId, PlayerRepository $playerRepository, GameService $gameService, EntityManagerInterface $entityManager) {
     // 1- find the player
