@@ -82,7 +82,16 @@ class GameService {
       $newCard->setLabel($labelNewCard);
       $newCard->setGame($game);
       $newCard->setPlayer($player);
-      $entityManager->persist($newCard);
+      //
+      if(isset($player)) {
+        if(!$player->isHuman()) {
+          $currentNumberOdCards = $player->getCardsInHand();
+          $newNumberOfCards = $currentNumberOdCards++;
+          $player->setCardsInHand($newNumberOfCards);
+          $entityManager->persist($player);
+        }
+        $entityManager->persist($newCard);
+      }
       
       $randomCards[] = $newCard;
     }
@@ -90,11 +99,5 @@ class GameService {
     $entityManager->flush();
     // return the randomly generated cards
     return $randomCards;
-  }
-
-  public function cardSpecialEffect(Card $card) {
-    if($card->getLabel() == "X" || $card->getLabel() == "S" || $card->getLabel() == "+2" ) {
-      
-    }
   }
 }

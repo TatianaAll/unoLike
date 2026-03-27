@@ -25,10 +25,20 @@
 							{# number of the boot with loop.index -> the number of round in the for loop #}
 							<h3 class="text-lg font-semibold">Bot
 								{{ loop.index - 1 }}</h3>
-							<div class="flex gap-1 mt-2 flex-wrap">
-								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-								{% endfor %}
+							<div
+								class="flex gap-1 mt-2 flex-wrap">
+								{# {% for i in 1..player.cardsInHand %}
+																																	<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+																																{% endfor %} #}
+								<ul class="flex flex-wrap gap-2">
+									{% for card in cards %}
+										{% if card.player and card.player.id == player.id %}
+											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+												{{ card.label }}
+											</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
 							</div>
 						</div>
 					{% endif %}
@@ -42,10 +52,20 @@
 						<div class="p-4 bg-green-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
 							<h3 class="text-lg font-semibold">Bot
 								{{ loop.index - 1 }}</h3>
-							<div class="flex gap-1 mt-2 flex-wrap">
-								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-								{% endfor %}
+							<div
+								class="flex gap-1 mt-2 flex-wrap">
+								{# {% for i in 1..player.cardsInHand %}
+																																	<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+																																{% endfor %} #}
+								<ul class="flex flex-wrap gap-2">
+									{% for card in cards %}
+										{% if card.player and card.player.id == player.id %}
+											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+												{{ card.label }}
+											</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
 							</div>
 						</div>
 					{% endif %}
@@ -59,10 +79,20 @@
 						<div class="p-4 bg-amber-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
 							<h3 class="text-lg font-semibold">Bot
 								{{ loop.index - 1 }}</h3>
-							<div class="flex gap-1 mt-2 flex-wrap">
-								{% for i in 1..player.cardsInHand %}
-									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
-								{% endfor %}
+							<div
+								class="flex gap-1 mt-2 flex-wrap">
+								{# {% for i in 1..player.cardsInHand %}
+																																									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
+																																								{% endfor %} #}
+								<ul class="flex flex-wrap gap-2">
+									{% for card in cards %}
+										{% if card.player and card.player.id == player.id %}
+											<li class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+												{{ card.label }}
+											</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
 							</div>
 						</div>
 					{% endif %}
@@ -93,13 +123,14 @@
 							<ul class="flex flex-wrap gap-2">
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
-										<li
-											class="p-2 rounded cursor-pointer hover:shadow-lg transition font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
-											{# Your turn only if game.turn = 0 #}
+										<li class="p-2 rounded font-bold min-h-15 min-w-10 bg-gray-800" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+
 											{% if game.turn == 0 %}
-												<a href="{{ path('app_click', {'cardId': card.id}) }}">
-													{{ card.label }}
-												</a>
+												<form action="{{ path('app_click', {'cardId': card.id}) }}" method="post">
+													<button class="w-full h-full">
+														{{ card.label }}
+													</button>
+												</form>
 											{% else %}
 												{{ card.label }}
 											{% endif %}
@@ -117,13 +148,11 @@
 	{% if game.turn != 0 %}
 		<script>
 			{% for player in players %}
-				{% if not player.isHuman and loop.index0 == game.turn %}
-					setTimeout(() => {
-					console.log('Bot -> {{ player.id }}');
-					window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
-					}, 3000);
-				{% endif %}
-			{% endfor %}
+{% if not player.isHuman and loop.index0 == game.turn %}
+setTimeout(() => {
+console.log('tour Bot   {{ player.id }}= bot   {{ loop.index0 }}');
+window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
+}, 3000);{% endif %}{% endfor %}
 		</script>
 	{% endif %}
 {% endblock %}

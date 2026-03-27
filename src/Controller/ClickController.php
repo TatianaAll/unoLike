@@ -16,13 +16,22 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ClickController extends AbstractController
 {
-  #[Route('/click/{cardId}', name: 'app_click', requirements: ['cardId'=>'\d+'], methods: ['GET'])]
+  #[Route('/click/{cardId}', name: 'app_click', requirements: ['cardId'=>'\d+'], methods: ['POST'])]
   public function playCard(int $cardId, CardRepository $cardRepository, EntityManagerInterface $entityManager): Response
   {
     // if a card is played i wanna to change the player_id to null and update the updated at in Game
     $cardPlayed = $cardRepository->findOneBy(['id' => $cardId]);
+    // can't play 2 times the ssame card
+    if ($cardPlayed->getPlayer() === null) {
+      return $this->redirectToRoute('app_play');
+    }
+    
     $gameInProgress = $cardPlayed->getGame();
     $turn = $gameInProgress->getTurn();
+    // security : if not the player turn return without other action
+    if ($gameInProgress->getTurn() !== 0) {
+      return $this->redirectToRoute('app_play');
+    }
 
     if ($this->canPlayCard($cardPlayed, $gameInProgress)) {
       // the current card is discard so the player = null;
@@ -43,7 +52,7 @@ final class ClickController extends AbstractController
     }
 
     return $this->redirectToRoute('app_play');
-    }
+  }
 
   #[Route('/enemy/{playerId}', name:'app_enemy', requirements: ['playerId'=>'\d+'], methods: ['GET'])]
   public function botTurn(int $playerId, PlayerRepository $playerRepository, CardRepository $cardRepository, EntityManagerInterface $entityManager, GameService $gameService) 
@@ -115,5 +124,16 @@ final class ClickController extends AbstractController
   private function canPlayCard(Card $card, Game $game): bool
   {
     return $card->getColor() === $game->getCurrentColor() || $card->getLabel() === $game->getCurrentValue();
+  }
+
+  private function specialCardsEffect(Card $card) {
+    if($card->getLabel() == "X" || $card->getLabel() == "S" || $card->getLabel() == "+2" ) {
+      if($card->getLabel() == "X") {
+        $currentGame = $card->getGame();
+        return $currentGame->setTurn((($currentGame->getTurn()) + 1) % 4);
+      } else {
+        return;
+      }
+    }
   }
 }
