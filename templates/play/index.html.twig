@@ -118,17 +118,16 @@
 			<div class="col-2 row-3 flex items-center justify-center">
 				{% for player in players %}
 					{% if player.isHuman %}
-						<div class="p-4 bg-red-200 rounded-lg shadow w-full" {% if game.turn == 0 %} style="box-shadow: 0 0 0 4px #10b981, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
+						<div class="p-4 bg-red-200 rounded-lg shadow w-full h-55" {% if game.turn == 0 %} style="box-shadow: 0 0 0 4px #10b981, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
 							<h3 class="text-lg font-semibold mb-2">Vos cartes</h3>
 							<ul class="flex flex-wrap gap-2">
 								{% for card in cards %}
 									{% if card.player and card.player.id == player.id %}
-
-										<li class="p-2 rounded font-bold h-20 w-16 bg-gray-800 flex items-center justify-center text-3xl" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
+										<li class="p-2 rounded font-bold h-18 w-14 bg-gray-800 flex items-center justify-center text-2xl hover:h-20 hover:w-16 transition-all" style="color: {{ card.color }}; border: solid 4px {{ card.color }}">
 
 											{% if game.turn == 0 %}
-												<form action="{{ path('app_click', {'cardId': card.id}) }}" method="post">
-													<button class="w-full h-full flex items-center justify-center">
+												<form action="{{ path('app_click', {'cardId': card.id}) }}" method="post" class="w-full h-full">
+													<button class="w-full h-full flex items-center justify-center cursor-pointer hover:text-4xl transition-all">
 														{{ card.label }}
 													</button>
 												</form>
