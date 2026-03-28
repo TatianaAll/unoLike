@@ -6,6 +6,7 @@
 {% block body %}
 	<section class="min-h-screen bg-gray-200 p-4">
 		<h1 class="text-2xl font-bold mb-4 text-center">Partie en cours ...</h1>
+		<p>Tour : {{game.turn}}</p>
 		{% if game.turn == 0 %}
 			<p class="text-center text-lg font-bold text-green-600 mb-4">C'est votre tour !</p>
 		{% else %}
@@ -19,14 +20,17 @@
 			{# Left of the screen --> Bot 1 #}
 			<div class="col-1 row-2 flex items-center justify-center">
 				{% for player in players %}
+				{# doc twig in loop 'for' -> loop.index 	The current iteration of the loop. (1 indexed) #}
 					{% if not player.isHuman and loop.index == 2 %}
 						<div
+						{# twig doc loop 'for' -> loop.index0 	The current iteration of the loop. (0 indexed) #}
 							class="p-4 bg-amber-300 rounded-lg shadow w-full" {% if loop.index0 == game.turn %} style="box-shadow: 0 0 0 4px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.1);" {% endif %}>
 							{# number of the boot with loop.index -> the number of round in the for loop #}
 							<h3 class="text-lg font-semibold">Bot
 								{{ loop.index - 1 }}</h3>
 							<div
 								class="flex gap-1 mt-2 flex-wrap">
+								{# doc twig -> If you do need to iterate over a sequence of numbers, you can use the .. operator: #}
 								{# {% for i in 1..player.cardsInHand %}
 									div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
 									{% endfor %} #}
@@ -54,6 +58,7 @@
 								{{ loop.index - 1 }}</h3>
 							<div
 								class="flex gap-1 mt-2 flex-wrap">
+								{# doc twig -> If you do need to iterate over a sequence of numbers, you can use the .. operator: #}
 								{# {% for i in 1..player.cardsInHand %}
 									<div class="bg-gray-400 text-gray-600 p-3 rounded text-xl">?</div>
 									{% endfor %} #}
@@ -150,7 +155,7 @@
 	{% if game.turn != 0 %}
 		<script>
 			{% for player in players %}
-{% if not player.isHuman and loop.index0 == game.turn %}
+{% if not player.isHuman and loop.index0 == game.turn and game.direction %}
 setTimeout(() => {
 window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
 }, 2000);{% endif %}{% endfor %}
