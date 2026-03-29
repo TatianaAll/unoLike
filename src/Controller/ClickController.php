@@ -47,6 +47,11 @@ final class ClickController extends AbstractController
       $gameInProgress->setCurrentColor($cardPlayed->getColor());
       $gameInProgress->setCurrentValue($cardPlayed->getLabel());
       // appliyng effect
+       if ($cardPlayed->getLabel() == "X") {
+          $turn = $this->specialCardsEffect($cardPlayed);
+        } else {
+          $this->specialCardsEffect($cardPlayed);
+        }
       $this->specialCardsEffect($cardPlayed);
       $gameInProgress->setDirection(!$gameInProgress->isDirection());
 
@@ -73,7 +78,6 @@ final class ClickController extends AbstractController
     $currentPlayer = $playerRepository->findOneBy(['id' => $playerId]);
     $humanPlayer = $playerRepository->findOneBy(['isHuman' => true, 'game' => $currentPlayer->getGame()->getId()]);
     // if no player or human player error
-    dump("test", $currentPlayer);
     if(!isset($currentPlayer) || $currentPlayer->isHuman()) {
       return $this->redirectToRoute('app_play');
     }
@@ -94,13 +98,19 @@ final class ClickController extends AbstractController
         if($currentPlayer->getCardsInHand() == 0) {
           return $this->redirectToRoute('app_win', ['winner' => $currentPlayer->getId()]);
         }
+        if ($card->getLabel() == "X") {
+          $turn = $this->specialCardsEffect($card);
+        } else {
+          $this->specialCardsEffect($card);
+        }
+        
         // discard the card
         $card->setPlayer(null);
         // change the game color and value
         $game->setCurrentColor($card->getColor());
         $game->setCurrentValue($card->getLabel());
         // appliyng the card effect
-        $this->specialCardsEffect($card);
+        
         $played = true;
         break;
       }
@@ -136,6 +146,7 @@ final class ClickController extends AbstractController
     $turn = $game->getTurn();
     // metho draw
     $gameService->getRandomCards(1, $game, $entityManager, $currentPlayer);
+    $currentPlayer->setCardsInHand(($currentPlayer->getCardsInHand())+ 1);
     $nextTurn = $this->implementTurn($game, $turn);
     $nextPlayerId = $this->getNextPlayerId($currentPlayer, $game, $nextTurn);
     $game->setIdPlayerNextTurn($nextPlayerId);
@@ -162,7 +173,8 @@ final class ClickController extends AbstractController
     $currentGame = $card->getGame();
     if($card->getLabel() == "X" || $card->getLabel() == "S" || $card->getLabel() == "+2" ) {
       if($card->getLabel() == "X") {
-        return $currentGame->setTurn((($currentGame->getTurn()) + 1) % 4);
+        $game = $card->getGame();
+        return $this->implementTurn($game, $game->getTurn());
       } else if($card->getLabel() == "+2") {
 
         return;
@@ -173,7 +185,7 @@ final class ClickController extends AbstractController
   }
 
   private function getNextPlayerId(Player $humanPlayer, Game $game, int $turn){
-    dump($turn);
+    // dump($turn);
     if($humanPlayer->isHuman() && $game->isDirection()){
       return ($humanPlayer->getId() + (($turn+ 1)% 4));
     } else if ($humanPlayer->isHuman() && !$game->isDirection()) {
