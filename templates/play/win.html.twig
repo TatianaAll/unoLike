@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Yesssss
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen flex items-center justify-center bg-linear-to-b from-green-500 to-white h-[96vh]">
+		<div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 text-center max-w-md w-full border border-white/20">
+			<h1 class="text-3xl font-bold mb-4">
+			  Super !
+			</h1>
+			<img src="{{ asset('images/gg.gif') }}" alt="Yawin" class="mx-auto rounded-xl shadow-lg mb-6 w-64">
+			<p class="text-lg mb-6">
+				Bravo, vous avez gagné contre des bots qui joue la première carte possible !
+			</p>
+
+			<a href="{{ path('app_home')}}" class="inline-block bg-white text-[green] font-semibold px-6 py-3 rounded-xl shadow hover:bg-green-100 transition">
+				Rejouer
+			</a>
+
+		</div>
+
+	</div>
+{% endblock %}

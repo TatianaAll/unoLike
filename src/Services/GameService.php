@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class GameService {
   public function initGame(EntityManagerInterface $entityManager) {
-    // Vérifier s'il y a une partie en cours et la finir
+    // Check if already a game in progress to ended it
     $existingGame = $entityManager->getRepository(Game::class)->findOneBy(['status' => Status::IN_PROGRESS]);
     if ($existingGame) {
       $existingGame->setStatus(Status::FINISHED);
@@ -26,6 +26,7 @@ class GameService {
     $newGame->setUpdatedAt(null);
     $newGame->setStatus(Status::IN_PROGRESS);
     $newGame->setTurn(0);
+    $newGame->setIdPlayerNextTurn(10000);
 
     // create 4 players: the first is human, others are botd
     $players = [];
@@ -35,6 +36,7 @@ class GameService {
       $player->setIsHuman($incrementPlayer === 0);
       $player->setCardsInHand(0);
       $player->setGame($newGame);
+      $player->setPosition($incrementPlayer);
 
       // persist player in DB
       $entityManager->persist($player);
@@ -45,6 +47,8 @@ class GameService {
       // add the player in the new game created
       $newGame->addPlayer($player);
     }
+    // flush to generate te player's ids
+    $entityManager->flush();
     // Persist the game
     $entityManager->persist($newGame);
 
@@ -59,7 +63,8 @@ class GameService {
     // So we attribute the color and the value to the game
     $newGame->setCurrentColor($startingCard[0]->getColor());
     $newGame->setCurrentValue($startingCard[0]->getLabel());
-    
+    // for the moment set the next to play at 0
+    $entityManager->persist($newGame);
     // Save in DB
     $entityManager->flush();
 
@@ -84,19 +89,16 @@ class GameService {
       $newCard->setPlayer($player);
       //
       if(isset($player)) {
-        if(!$player->isHuman()) {
-          $currentNumberOdCards = $player->getCardsInHand();
-          $newNumberOfCards = $currentNumberOdCards++;
-          $player->setCardsInHand($newNumberOfCards);
-          $entityManager->persist($player);
-        }
+        $currentNumberOfCards = $player->getCardsInHand();
+        $newNumberOfCards = $currentNumberOfCards++;
+        $player->setCardsInHand($newNumberOfCards);
+        $entityManager->persist($player);
         $entityManager->persist($newCard);
       }
       
       $randomCards[] = $newCard;
     }
-    // save in DB
-    $entityManager->flush();
+
     // return the randomly generated cards
     return $randomCards;
   }

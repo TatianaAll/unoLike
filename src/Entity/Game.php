@@ -40,6 +40,9 @@ class Game
     #[ORM\Column]
     private ?int $turn = null;
 
+    #[ORM\Column]
+    private ?int $idPlayerNextTurn = null;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -160,6 +163,18 @@ class Game
     public function setTurn(int $turn): static
     {
         $this->turn = $turn;
+
+        return $this;
+    }
+
+    public function getIdPlayerNextTurn(): ?int
+    {
+        return $this->idPlayerNextTurn;
+    }
+
+    public function setIdPlayerNextTurn(int $idPlayerNextTurn): static
+    {
+        $this->idPlayerNextTurn = $idPlayerNextTurn;
 
         return $this;
     }

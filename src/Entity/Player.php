@@ -21,11 +21,14 @@ class Player
     #[ORM\Column]
     private ?bool $isHuman = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Game::class, inversedBy: "players", cascade: ['persist'])]
     private ?Game $game = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: Card::class)]
     private Collection $cards;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $position = null;
 
     public function __construct()
     {
@@ -99,6 +102,18 @@ class Player
                 $card->setPlayer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
 
         return $this;
     }

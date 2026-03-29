@@ -7,6 +7,7 @@
 	<section class="min-h-screen bg-gray-200 p-4">
 		<h1 class="text-2xl font-bold mb-4 text-center">Partie en cours ...</h1>
 		<p>Tour : {{game.turn}}</p>
+		<p>prochain à jouer : {{game.idPlayerNextTurn}}</p>
 		{% if game.turn == 0 %}
 			<p class="text-center text-lg font-bold text-green-600 mb-4">C'est votre tour !</p>
 		{% else %}
@@ -151,14 +152,25 @@
 			</div>
 		</div>
 	</section>
+	{{ dump(game.idPlayerNextTurn - (game.direction ? 1 : 0)) }}
 
-	{% if game.turn != 0 %}
-		<script>
-			{% for player in players %}
-{% if not player.isHuman and loop.index0 == game.turn and game.direction %}
-setTimeout(() => {
-window.location.href = "{{ path('app_enemy', {'playerId': player.id }) }}";
-}, 2000);{% endif %}{% endfor %}
-		</script>
+	<script>
+	{% if game.direction %}
+		{% if game.idPlayerNextTurn % 4 != 2 %}
+			setTimeout(() => {
+				{% if game.idPlayerNextTurn % 4 != 1 %}
+					window.location.href = "{{ path('app_enemy', {'playerId': game.idPlayerNextTurn - 1 }) }}";
+				{% else %}
+					window.location.href = "{{ path('app_enemy', {'playerId': game.idPlayerNextTurn + 3 }) }}";
+				{% endif %}
+			}, 2000);
+		{% endif %}
+	{% else %}
+		{% if game.idPlayerNextTurn % 4 != 0 %}
+			setTimeout(() => {
+				window.location.href = "{{ path('app_enemy', {'playerId': game.idPlayerNextTurn +1 }) }}";
+			}, 2000);
+		{% endif %}
 	{% endif %}
+  </script>
 {% endblock %}
